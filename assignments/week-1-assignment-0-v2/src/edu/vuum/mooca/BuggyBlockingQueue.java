@@ -28,6 +28,13 @@ public class BuggyBlockingQueue<E> implements BlockingQueue<E> {
     }
 
     /**
+     * Returns the number of elements in this queue.
+     */
+    public int size() {
+        return mList.size();
+    }
+
+    /**
      * Insert msg at the tail of the queue, but doesn't block if the
      * queue is full.
      */
@@ -118,8 +125,5 @@ public class BuggyBlockingQueue<E> implements BlockingQueue<E> {
     }
     public boolean isEmpty() {
         return false;
-    }
-    public int size() {
-        return 0;
     }
 }
