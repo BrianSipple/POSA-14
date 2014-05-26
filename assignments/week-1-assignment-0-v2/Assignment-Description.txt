@@ -41,8 +41,8 @@ In particular, you'll need to do the following:
   (which is done for you by the testQueue() template method in the
   SynchronizedQueue.java file).
 
-. If you'd like to enable verbose debugging output please set the 
-  diagnosticsEnabled flag in SynchronizedQueueImpl to true (it
+. If you'd like to enable verbose debugging output please set the
+  diagnosticsEnabled flag in SynchronizedQueueImpl.java to true (it
   defaults to false).
 
 All the information needed to write this code is described in these
@@ -62,7 +62,7 @@ We'll also discuss this assignment specification (and later its
 solution) in the POSA MOOC "Virtual Office Hours", which are described
 in item #38 at the POSA MOOC FAQ available from
 
-http://www.courera.org/course/posa
+http://www.coursera.org/course/posa
 
 The SynchronizerQueueTest.java file uses JUnit to run the tests.  We
 do this to automate the testing process and leverage the integration
@@ -83,13 +83,16 @@ view will pop up in Eclipse and run the tests contained therein.  All
 tests should pass. The ArrayBlockingQueue will pass because your
 testQueue method runs successfully.  The tests for BuggyBlockingQueue
 (which is an intentionally flawed class), should "pass" if some error
-occurs while running testQueue (these errors are expected).  As long
-as these JUnit tests both "pass" successfully your program will be be
-consider "correct" for the purposes of assessing this assignment.
+occurs while running testQueue (these errors are expected).  If a test
+passes a green-check mark will appear next to the test in the JUnit
+view.  As long as this JUnit test "passes" successfully your program
+will be be consider "correct" for the purposes of assessing this
+assignment.
 
 If the tests run and "pass," you should see check-marks next to each
 of the tests in the JUnit view.  If you set the diagnosticsEnabled
 flag to true then debugging output will be printed to the console as
-the tests run. This text is for informational purposes only and have
-no bearing on whether your program is "correct," but will help you to
-better understand what it's doing.
+the tests run.  This debugging output is for informational purposes
+only and have no bearing on whether your program is "correct."  If the
+tests run and "pass," you should see a green check-mark next to the
+test in the JUnit view, which is all that matters.
