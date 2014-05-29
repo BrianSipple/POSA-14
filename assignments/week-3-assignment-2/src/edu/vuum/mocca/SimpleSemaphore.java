@@ -1,8 +1,9 @@
 package edu.vuum.mocca;
 
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @class SimpleSemaphore
@@ -16,23 +17,32 @@ public class SimpleSemaphore {
      * Define a ReentrantLock to protect the critical section.
      */
     // TODO - you fill in here
+	Lock mRLock;
 
     /**
      * Define a ConditionObject to wait while the number of
      * permits is 0.
      */
     // TODO - you fill in here
+	Condition noPermits;
 
     /**
      * Define a count of the number of available permits.
      */
     // TODO - you fill in here.  Make sure that this data member will
     // ensure its values aren't cached by multiple Threads..
+	private int mPermits;
+	
+	private Semaphore mSema;
 
-    public SimpleSemaphore(int permits, boolean fair) {
-        // TODO - you fill in here to initialize the SimpleSemaphore,
-        // making sure to allow both fair and non-fair Semaphore
-        // semantics.
+	
+	public SimpleSemaphore(int permits, boolean fair) {
+    	
+    	mSema = new Semaphore(permits, fair);
+    	mPermits = permits;
+    	mRLock = new ReentrantLock(fair);
+    	noPermits = mRLock.newCondition();
+
     }
 
     /**
@@ -41,6 +51,16 @@ public class SimpleSemaphore {
      */
     public void acquire() throws InterruptedException {
         // TODO - you fill in here.
+    	mRLock.lockInterruptibly();
+    	try {
+    		while (availablePermits() == 0) {
+    			noPermits.await();
+    		}
+    		mSema.acquire();
+    		mPermits--;
+    	} finally {
+    		mRLock.unlock();
+    	}
     }
 
     /**
@@ -49,6 +69,16 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here.
+    	mRLock.lock();
+    	try {
+    		while (availablePermits() == 0) {
+    			noPermits.awaitUninterruptibly();
+    		}
+    		mSema.acquireUninterruptibly();
+    		mPermits--;
+    	} finally {
+    		mRLock.unlock();
+    	}
     }
 
     /**
@@ -56,6 +86,14 @@ public class SimpleSemaphore {
      */
     void release() {
         // TODO - you fill in here.
+    	try {
+    		mRLock.lock();
+    		mSema.release();
+    		mPermits++;
+    		//noPermits.notify();
+    	} finally {
+    		mRLock.unlock();
+    	}
     }
 
     /**
@@ -64,6 +102,6 @@ public class SimpleSemaphore {
     public int availablePermits() {
         // TODO - you fill in here by changing null to the appropriate
         // return value.
-        return null;
+        return mPermits;
     }
 }

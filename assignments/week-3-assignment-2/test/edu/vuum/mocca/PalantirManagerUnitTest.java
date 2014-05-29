@@ -24,7 +24,7 @@ public class PalantirManagerUnitTest {
      * If this is set to true in SynchronizedQueueImpl.java then lots
      * of debugging output will be generated.
      */
-    public static boolean diagnosticsEnabled = false;
+    public static boolean diagnosticsEnabled = true;
 
     /**
      * Total number of times each Palantir user gets to gaze into a
