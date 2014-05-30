@@ -1,6 +1,7 @@
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @class SimpleSemaphore
@@ -14,10 +15,22 @@ public class SimpleSemaphore {
     /**
      * Constructor initialize the data members.  
      */
+	
+	private Semaphore mSema;
+	private Condition mCondVar;
+	private Lock mRLock;
+	private int mAvailablePermits;
+	private int maxPermits;
+	
     public SimpleSemaphore (int permits,
                             boolean fair)
     { 
         // TODO - you fill in here
+    	mSema = new Semaphore(permits, fair);
+    	mRLock = new ReentrantLock(fair);
+    	mAvailablePermits = permits;
+    	maxPermits = permits;
+    	mCondVar = mRLock.newCondition();
     }
 
     /**
@@ -26,6 +39,16 @@ public class SimpleSemaphore {
      */
     public void acquire() throws InterruptedException {
         // TODO - you fill in here
+    	mRLock.lockInterruptibly();
+    	try {
+    		while (mAvailablePermits == 0) {
+    			mCondVar.await();
+    		}
+    		mSema.acquire();
+    		mAvailablePermits--;
+    	} finally {
+    		mRLock.unlock();
+    	}
     }
 
     /**
@@ -34,28 +57,36 @@ public class SimpleSemaphore {
      */
     public void acquireUninterruptibly() {
         // TODO - you fill in here
+    	mRLock.lock();
+    	try {
+    		while(mAvailablePermits == 0) {
+    			mCondVar.awaitUninterruptibly();
+    		}
+    		mSema.acquireUninterruptibly();
+    		mAvailablePermits--;
+    	} finally {
+    		mRLock.unlock();
+    	}
     }
 
     /**
      * Return one permit to the semaphore.
      */
     void release() {
-        // TODO - you fill in here
+    	// TODO - you fill in here
+    	try {
+    		mRLock.lock();
+    		while (mAvailablePermits == maxPermits) {
+    			mCondVar.awaitUninterruptibly();
+    			mSema.release();
+    			mAvailablePermits++;
+    		}     	
+    	} finally {
+    			mRLock.unlock();
+    	}
     }
-
-    /**
-     * Define a ReentrantLock to protect the critical section.
-     */
-    // TODO - you fill in here
-
-    /**
-     * Define a ConditionObject to wait while the number of
-     * permits is 0.
-     */
-    // TODO - you fill in here
-
-    /**
-     * Define a count of the number of available permits.
-     */
-    // TODO - you fill in here
+    
+    public int getAvailablePermits() {
+    	return mAvailablePermits;
+    }
 }

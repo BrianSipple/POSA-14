@@ -16,67 +16,57 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SimpleSemaphore {
     /**
-     * Define a ReentrantLock to protect the critical section.
+     * Constructor initialize the data members.  
      */
-    // TODO - you fill in here
-	Lock mRLock;
-
-    /**
-     * Define a Condition that waits while the number of permits is 0.
-     */
-    // TODO - you fill in here
-	Condition noPermits;
-
-    /**
-     * Define a count of the number of available permits.
-     */
-    // TODO - you fill in here.  Make sure that this data member will
-    // ensure its values aren't cached by multiple Threads..
-	private int mPermits;
 	
 	private Semaphore mSema;
-
+	private Condition mCondVar;
+	private Lock mRLock;
+	private int mAvailablePermits;
+	private int maxPermits;
 	
-	public SimpleSemaphore(int permits, boolean fair) {
-    	
+    public SimpleSemaphore (int permits,
+                            boolean fair)
+    { 
+        // TODO - you fill in here
     	mSema = new Semaphore(permits, fair);
-    	mPermits = permits;
     	mRLock = new ReentrantLock(fair);
-    	noPermits = mRLock.newCondition();
-
+    	mAvailablePermits = permits;
+    	maxPermits = permits;
+    	mCondVar = mRLock.newCondition();
     }
 
     /**
-     * Acquire one permit from the semaphore in a manner that can be
-     * interrupted.
+     * Acquire one permit from the semaphore in a manner that can
+     * be interrupted.
      */
     public void acquire() throws InterruptedException {
-        // TODO - you fill in here.
+        // TODO - you fill in here
     	mRLock.lockInterruptibly();
     	try {
-    		while (availablePermits() == 0) {
-    			noPermits.await();
+    		while (mAvailablePermits == 0) {
+    			mCondVar.await();
     		}
     		mSema.acquire();
-    		mPermits--;
+    		mAvailablePermits--;
     	} finally {
     		mRLock.unlock();
     	}
     }
 
     /**
-     * Acquire one permit from the semaphore in a manner that cannot be
-     * interrupted.
+     * Acquire one permit from the semaphore in a manner that
+     * cannot be interrupted.
      */
     public void acquireUninterruptibly() {
-        // TODO - you fill in here.
+        // TODO - you fill in here
     	mRLock.lock();
     	try {
-    		while (availablePermits() == 0) {
-    			noPermits.awaitUninterruptibly();
+    		while(mAvailablePermits == 0) {
+    			mCondVar.awaitUninterruptibly();
     		}
     		mSema.acquireUninterruptibly();
-    		mPermits--;
+    		mAvailablePermits--;
     	} finally {
     		mRLock.unlock();
     	}
@@ -86,23 +76,21 @@ public class SimpleSemaphore {
      * Return one permit to the semaphore.
      */
     void release() {
-        // TODO - you fill in here.
+    	// TODO - you fill in here
     	try {
     		mRLock.lock();
-    		mSema.release();
-    		mPermits++;
-    		//noPermits.notify();
+    		while (mAvailablePermits == maxPermits) {
+    			mCondVar.awaitUninterruptibly();
+    			mSema.release();
+    			mAvailablePermits++;
+    		}     	
     	} finally {
-    		mRLock.unlock();
+    			mRLock.unlock();
     	}
     }
-
-    /**
-     * Return the number of permits available.
-     */
     public int availablePermits() {
         // TODO - you fill in here by changing null to the appropriate
         // return value.
-        return mPermits;
+        return mAvailablePermits;
     }
 }
