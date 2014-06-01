@@ -19,7 +19,7 @@ public class PingPongRight {
 	/**
 	 * Latch that will be decremented each time a thread exits.
 	 */
-	public static CountDownLatch latch = new CountDownLatch(mMaxIterations); // TODO - You fill in here
+	public static CountDownLatch latch = new CountDownLatch(2); // TODO - You fill in here
 
 	/**
 	 * @class PlayPingPongThread
@@ -30,18 +30,16 @@ public class PingPongRight {
 	 */
 	public static class PlayPingPongThread extends Thread
 	{
+
+		private SimpleSemaphore[] mSemas = new SimpleSemaphore[3];
 		/**
 		 * Constructor initializes the data member.
 		 */
-		public PlayPingPongThread (/* TODO - You fill in here */)
+		public PlayPingPongThread (String stringToPrint, SimpleSemaphore sema1, SimpleSemaphore sema2)
 		{
-			// TODO - You fill in here.
-			SimpleSemaphore pingSema = new SimpleSemaphore(mMaxIterations, true);
-			SimpleSemaphore pongSema = new SimpleSemaphore(mMaxIterations, true);
-
-			ping = "Ping(" + pingSema.getAvailablePermits() + ")!";
-			pong = "Pong(" + pongSema.getAvailablePermits() + ")!";
-
+			mStringToPrint = stringToPrint;
+			mSemas[FIRST_SEMA] = sema1;
+			mSemas[SECOND_SEMA] = sema2;
 		}
 
 		/**
@@ -51,35 +49,14 @@ public class PingPongRight {
 		 */
 		public void run () 
 		{
-			// TODO - You fill in here.
 
-			// print "ping(#)!"
-			try {
-				latch.await();			//acquire a countdown instance from the latch's synchronizer
-				pingSema.acquire();		//attempts to acquire lock and decrement the semaphore, and return the lock
-				System.out.println(ping);	// in the context of the strategy pattern, this would be the console strategy.
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				pingSema.release();
-				latch.countDown();		// count down the latch
+			// Go for printout!
+			mSemas[FIRST_SEMA].acquireUninterruptibly();
+			System.out.println(mStringToPrint);
+			mSemas[FIRST_SEMA].release();
+			latch.countDown();
+			
 
-			}
-
-			//print "pong(#)!"... see method comments directly above
-			try {
-				latch.await();
-				pongSema.acquire();
-				System.out.println(pong);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				pongSema.release();				
-				latch.countDown();
-
-			}        	
 		}
 
 		/**
@@ -87,53 +64,63 @@ public class PingPongRight {
 		 * iteration.
 		 */
 		// TODO - You fill in here.
-		private String ping;
-		private String pong;
+		private String mStringToPrint;
 
 		/**
 		 * The two SimpleSemaphores use to alternate pings and pongs.
 		 */
 		// TODO - You fill in here.
-		private SimpleSemaphore pingSema;
-		private SimpleSemaphore pongSema;
+		private int FIRST_SEMA = 1;
+		private int SECOND_SEMA = 2;
 
 	}
 
 	/**
 	 * The main() entry point method into PingPongRight program. 
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
-		try {         
-			// Create the ping and pong SimpleSemaphores that control
-			// alternation between threads.
-
-			// TODO - You fill in here.
-
+	public static void main(String[] args) throws InterruptedException {
+		try {   
 			System.out.println("Ready...Set...Go!");
+			for (int currentIter = 0; currentIter < mMaxIterations; currentIter++) {
 
-			// Create the ping and pong threads, passing in the string
-			// to print and the appropriate SimpleSemaphores.
-			PlayPingPongThread ping =
-					new PlayPingPongThread(/* TODO - You fill in here */);
-			PlayPingPongThread pong =
-					new PlayPingPongThread(/* TODO - You fill in here */);
+				// Create the ping and pong SimpleSemaphores that control
+				// alternation between threads.
 
-			// Initiate the ping and pong threads, which will call the
-			// run() hook method.
-			ping.start();
-			pong.start();
+				// TODO - You fill in here.
+				SimpleSemaphore pingSema = new SimpleSemaphore(1, true);
+				SimpleSemaphore pongSema = new SimpleSemaphore(1, true);
 
-			// Use barrier synchronization to wait for both threads to
-			// finish.
+				String pingString = "ping(" + currentIter + ")!";
+				String pongString = "pong(" + currentIter + ")!";
 
-			// TODO - replace replace the following line with a
-			// CountDownLatch barrier synchronizer call that waits for
-			// both threads to finish.
-			throw new java.lang.InterruptedException();
+				// Create the ping and pong threads, passing in the string
+				// to print and the appropriate SimpleSemaphores.
+				PlayPingPongThread ping =
+						new PlayPingPongThread(pingString, pingSema, pongSema);
+				PlayPingPongThread pong =
+						new PlayPingPongThread(pongString, pongSema, pingSema);
+
+				// Initiate the ping and pong threads, which will call the
+				// run() hook method.
+				ping.start();
+				pong.start();
+				
+				// Use barrier synchronization to wait for both threads to
+				// finish.
+
+				// TODO - replace replace the following line with a
+				// CountDownLatch barrier synchronizer call that waits for
+				// both threads to finish.
+				latch.await();
+			}
 		} 
-		catch (java.lang.InterruptedException e)
-		{}
+		catch (java.lang.InterruptedException e){
+			//e.printStackTrace();
+		}
 
+		Thread.sleep(1);
 		System.out.println("Done!");
 	}
+
 }
