@@ -1,3 +1,4 @@
+package edu.vuum.mocca;
 // Import the necessary Java synchronization and scheduling classes.
 
 import java.util.concurrent.CountDownLatch;
@@ -10,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
  *        instances to correctly alternate printing "Ping" and "Pong",
  *        respectively, on the console display.
  */
-public class PingPongRight {
+public class PingPongRight_rough {
 	/**
 	 * Number of iterations to run the test program.
 	 */

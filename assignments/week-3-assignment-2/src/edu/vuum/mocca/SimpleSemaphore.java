@@ -47,8 +47,9 @@ public class SimpleSemaphore {
     		while (mAvailablePermits == 0) {
     			mCondVar.await();
     		}
-    		mSema.acquire();
     		mAvailablePermits--;
+    		mSema.acquire();
+    		
     	} finally {
     		mRLock.unlock();
     	}
@@ -65,8 +66,9 @@ public class SimpleSemaphore {
     		while(mAvailablePermits == 0) {
     			mCondVar.awaitUninterruptibly();
     		}
-    		mSema.acquireUninterruptibly();
     		mAvailablePermits--;
+    		mSema.acquireUninterruptibly();
+    		
     	} finally {
     		mRLock.unlock();
     	}
@@ -81,9 +83,9 @@ public class SimpleSemaphore {
     		mRLock.lock();
     		while (mAvailablePermits == maxPermits) {
     			mCondVar.awaitUninterruptibly();
-    			mSema.release();
-    			mAvailablePermits++;
     		}     	
+    		mSema.release();
+			mAvailablePermits++;
     	} finally {
     			mRLock.unlock();
     	}

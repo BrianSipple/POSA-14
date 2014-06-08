@@ -130,7 +130,7 @@ public class PalantirManagerUnitTest {
 
                     if (diagnosticsEnabled)
                         System.out.println(Thread.currentThread().getName()
-                                           + " is releasing the " 
+                                           + " has released the "
                                            + palantir.name() 
                                            + " palantir");
                 }
@@ -233,9 +233,13 @@ public class PalantirManagerUnitTest {
             if (diagnosticsEnabled)            
                 System.out.println("Finishing PalantirManagerTest");
         } catch (Exception e) {
-            fail("The Exception "
+            if (diagnosticsEnabled)
+        	System.out.println("A " 
+                                   + e.getMessage() 
+                                   + " Exception was thrown");
+            fail("A "
                  + e.getMessage()
-                 + " was thrown");
+                 + " Exception was thrown");
         }
     }
 
