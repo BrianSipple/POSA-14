@@ -20,17 +20,13 @@ public class SimpleSemaphore {
 	private Semaphore mSema;
 	private Condition mCondVar;
 	private Lock mRLock;
-	private int mAvailablePermits;
-	private int maxPermits;
+	private volatile int mAvailablePermits;
 	
     public SimpleSemaphore (int permits,
                             boolean fair)
     { 
-        // TODO - you fill in here
-    	mSema = new Semaphore(permits, fair);
     	mRLock = new ReentrantLock(fair);
     	mAvailablePermits = permits;
-    	maxPermits = permits;
     	mCondVar = mRLock.newCondition();
     }
 
@@ -45,8 +41,7 @@ public class SimpleSemaphore {
     		while (mAvailablePermits == 0) {
     			mCondVar.await();
     		}
-    		mSema.acquire();
-    		mAvailablePermits--;
+    		mAvailablePermits -= 1;
     	} finally {
     		mRLock.unlock();
     	}
@@ -63,8 +58,7 @@ public class SimpleSemaphore {
     		while(mAvailablePermits == 0) {
     			mCondVar.awaitUninterruptibly();
     		}
-    		mSema.acquireUninterruptibly();
-    		mAvailablePermits--;
+    		mAvailablePermits -= 1;
     	} finally {
     		mRLock.unlock();
     	}
@@ -77,11 +71,11 @@ public class SimpleSemaphore {
     	// TODO - you fill in here
     	try {
     		mRLock.lock();
-    		while (mAvailablePermits == maxPermits) {
+    		while (mAvailablePermits == 1) {
     			mCondVar.awaitUninterruptibly();
-    			mSema.release();
-    			mAvailablePermits++;
-    		}     	
+    		}
+    		mAvailablePermits += 1;
+    		mCondVar.signal();
     	} finally {
     			mRLock.unlock();
     	}

@@ -1,5 +1,4 @@
 package edu.vuum.mocca;
-
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -7,12 +6,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @class SimpleSemaphore
- * 
+ *
  * @brief This class provides a simple counting semaphore
  *        implementation using Java a ReentrantLock and a
- *        ConditionObject (which is accessed via a Condition). It must
- *        implement both "Fair" and "NonFair" semaphore semantics,
- *        just liked Java Semaphores.
+ *        ConditionObject.  It must implement both "Fair" and
+ *        "NonFair" semaphore semantics, just liked Java Semaphores. 
  */
 public class SimpleSemaphore {
     /**
@@ -22,17 +20,13 @@ public class SimpleSemaphore {
 	private Semaphore mSema;
 	private Condition mCondVar;
 	private Lock mRLock;
-	private int mAvailablePermits;
-	private int maxPermits;
+	private volatile int mAvailablePermits;
 	
     public SimpleSemaphore (int permits,
                             boolean fair)
     { 
-        // TODO - you fill in here
-    	mSema = new Semaphore(permits, fair);
     	mRLock = new ReentrantLock(fair);
     	mAvailablePermits = permits;
-    	maxPermits = permits;
     	mCondVar = mRLock.newCondition();
     }
 
@@ -47,9 +41,7 @@ public class SimpleSemaphore {
     		while (mAvailablePermits == 0) {
     			mCondVar.await();
     		}
-    		mAvailablePermits--;
-    		mSema.acquire();
-    		
+    		mAvailablePermits -= 1;
     	} finally {
     		mRLock.unlock();
     	}
@@ -66,9 +58,7 @@ public class SimpleSemaphore {
     		while(mAvailablePermits == 0) {
     			mCondVar.awaitUninterruptibly();
     		}
-    		mAvailablePermits--;
-    		mSema.acquireUninterruptibly();
-    		
+    		mAvailablePermits -= 1;
     	} finally {
     		mRLock.unlock();
     	}
@@ -81,18 +71,17 @@ public class SimpleSemaphore {
     	// TODO - you fill in here
     	try {
     		mRLock.lock();
-    		while (mAvailablePermits == maxPermits) {
+    		while (mAvailablePermits == 1) {
     			mCondVar.awaitUninterruptibly();
-    		}     	
-    		mSema.release();
-			mAvailablePermits++;
+    		}
+    		mAvailablePermits += 1;
+    		mCondVar.signal();
     	} finally {
     			mRLock.unlock();
     	}
     }
-    public int availablePermits() {
-        // TODO - you fill in here by changing null to the appropriate
-        // return value.
-        return mAvailablePermits;
+    
+    public int getAvailablePermits() {
+    	return mAvailablePermits;
     }
 }
