@@ -14,7 +14,16 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class SimpleSemaphore {
     /**
+<<<<<<< HEAD
      * Constructor initialize the data members.  
+=======
+     * Define a Lock to protect the critical section.
+     */
+    // TODO - you fill in here
+
+    /**
+     * Define a Condition that waits while the number of permits is 0.
+>>>>>>> 22b4842c2aa73578fdea5b227f2e6c9ef7197dde
      */
 	
 	private Semaphore mSema;
@@ -67,6 +76,7 @@ public class SimpleSemaphore {
     /**
      * Return one permit to the semaphore.
      */
+<<<<<<< HEAD
     void release() {
     	// TODO - you fill in here
     	try {
@@ -79,6 +89,10 @@ public class SimpleSemaphore {
     	} finally {
     			mRLock.unlock();
     	}
+=======
+    public void release() {
+        // TODO - you fill in here.
+>>>>>>> 22b4842c2aa73578fdea5b227f2e6c9ef7197dde
     }
     
     public int getAvailablePermits() {

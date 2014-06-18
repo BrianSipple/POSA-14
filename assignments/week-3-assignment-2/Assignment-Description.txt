@@ -4,7 +4,7 @@ Released Monday, May 26th, 2014
 Due Monday, June 9th, 2014
 
 In this assignment, you will use a Java ReentrantLock and Java
-ConditionObject to implement a subset of the Java
+Condition to implement a subset of the Java
 java.util.concurrent.Semaphore class, which we call SimpleSemaphore.
 This assignment also reuses the SimpleAtomicLong you implemented for
 week-2-assignment-1, so make sure it's compiling and running properly
@@ -36,7 +36,8 @@ In particular, you'll need to do the following:
 
 . Implement the SimpleAtomicLong class, which you should replace with
   your solution to week-2-assignment-1, after applying any fixes
-  suggested by peer graders.  This class is only used by the
+  motivated by watching the Virtual Office Hours video of the
+  instructor's solution(s).  This class is only used by the
   PalantirManagerUnitTest.java and should not be used in the
   SimpleSemaphore implementation itself.
 
