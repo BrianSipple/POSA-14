@@ -154,7 +154,6 @@ public class PingPongRight {
 		// TODO - Initiate the ping and pong threads, which will call
 		// the run() hook method.
 		ping.start();
-		//Thread.sleep(1);
 		pong.start();
 
 		// TODO - replace the following line with a barrier
