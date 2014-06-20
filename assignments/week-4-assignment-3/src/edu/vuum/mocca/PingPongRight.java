@@ -2,11 +2,10 @@ package edu.vuum.mocca;
 
 // Import the necessary Java synchronization and scheduling classes.
 import java.util.concurrent.CountDownLatch;
-<<<<<<< HEAD
+
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-=======
->>>>>>> 22b4842c2aa73578fdea5b227f2e6c9ef7197dde
+
 
 /**
  * @class PingPongRight
@@ -17,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  *        respectively, on the console display.
  */
 public class PingPongRight {
-<<<<<<< HEAD
+
 	/**
 	 * Number of iterations to run the test program.
 	 */
