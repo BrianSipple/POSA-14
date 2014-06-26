@@ -18,8 +18,8 @@ import android.widget.TextView;
 /**
  * @class UniqueIDGeneratorActivity
  *
- * @brief A class that allows a user to generate a system-wide Unique
- *        ID.
+ * @brief A class that interacts with a user to invoke a Bound Service
+ *        that generates a system-wide Unique ID.
  */
 public class UniqueIDGeneratorActivity extends Activity {
     /**
@@ -31,6 +31,12 @@ public class UniqueIDGeneratorActivity extends Activity {
      * Location where the unique ID is displayed.
      */
     private TextView mOutput;
+
+    /**
+     * Reference to the Messenger that's implemented in the
+     * UniqueIDGeneratorService.
+     */
+    private Messenger mReqMessengerRef = null;
 
     /**
      * @class ReplyHandler
@@ -53,38 +59,32 @@ public class UniqueIDGeneratorActivity extends Activity {
         }
     }
 
-    /**
-     * Reference to the Messenger that's implemented in the
-     * UniqueIDGeneratorService.
-     */
-    private Messenger mMessengerRef = null;
-
     /** 
-     * This ServiceConnection is used to receive a Messenger proxy
+     * This ServiceConnection is used to receive a Messenger reference
      * after binding to the UniqueIDGeneratorService using bindService().
      */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private ServiceConnection mSvcConn = new ServiceConnection() {
             /**
              * Called after the UniqueIDGeneratorService is connected to
              * convey the result returned from onBind().
              */
             public void onServiceConnected(ComponentName className,
-                                           IBinder messenger) {
+                                           IBinder binder) {
                 Log.d(TAG, "ComponentName:" + className);
 
-                // Create a newq Messenger that encapsulates the
+                // Create a new Messenger that encapsulates the
                 // returned IBinder object and store it for later use
-                // in mMessengerRef.
-                mMessengerRef = new Messenger(messenger);
+                // in mReqMessengerRef.
+                mReqMessengerRef = new Messenger(binder);
             }
 
             /**
              * Called if the Service crashes and is no longer
              * available.  The ServiceConnection will remain bound,
-             * but the service will not respond to any requests.
+             * but the Service will not respond to any requests.
              */
             public void onServiceDisconnected(ComponentName className) {
-                mMessengerRef = null;
+                mReqMessengerRef = null;
             }
 	};
 
@@ -115,11 +115,11 @@ public class UniqueIDGeneratorActivity extends Activity {
         request.replyTo = new Messenger(new ReplyHandler());
         
         try {
-            if (mMessengerRef != null) {
+            if (mReqMessengerRef != null) {
                 Log.d(TAG, "sending message");
                 // Send the request Message to the
                 // UniqueIDGeneratorService.
-                mMessengerRef.send(request);
+                mReqMessengerRef.send(request);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -136,11 +136,11 @@ public class UniqueIDGeneratorActivity extends Activity {
         Log.d(TAG, "onStart()");
 
         Log.d(TAG, "calling bindService()");
-        if (mMessengerRef == null)
+        if (mReqMessengerRef == null)
             // Bind to the UniqueIDGeneratorService associated with this
             // Intent.
             bindService(UniqueIDGeneratorService.makeIntent(this),
-                        this.mConnection,
+                        mSvcConn,
                         Context.BIND_AUTO_CREATE);
     }
 
@@ -151,8 +151,7 @@ public class UniqueIDGeneratorActivity extends Activity {
     @Override
     protected void onStop() {
         // Unbind from the Service.
-        if (mMessengerRef != null)
-            unbindService(mConnection);
+        unbindService(mSvcConn);
         super.onStop();
     }
 }

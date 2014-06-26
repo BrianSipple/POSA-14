@@ -49,6 +49,11 @@ public class DownloadActivity extends Activity {
     private ProgressDialog mProgressDialog;
 
     /**
+     * Stores an instance of DownloadHandler.
+     */
+    Handler mDownloadHandler = null;
+
+    /**
      * Method that initializes the Activity when it is first created.
      * 
      * @param savedInstanceState
@@ -57,17 +62,16 @@ public class DownloadActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /**
-         * Sets the content view specified in the main.xml file.
-         */
+        // Sets the content view specified in the main.xml file.
         setContentView(R.layout.main);
 
-        /**
-         * Caches references to the EditText and ImageView objects in
-         * data members to optimize subsequent access.
-         */
+        // Caches references to the EditText and ImageView objects in
+        // data members to optimize subsequent access.
         mUrlEditText = (EditText) findViewById(R.id.mUrlEditText);
         mImageView = (ImageView) findViewById(R.id.mImageView);
+
+        // Initialize the downloadHandler.
+        mDownloadHandler = new DownloadHandler(this);
     }
 
     /**
@@ -135,7 +139,7 @@ public class DownloadActivity extends Activity {
         Intent intent =
             DownloadService.makeIntent(this,
                                        Uri.parse(url),
-                                       downloadHandler);
+                                       mDownloadHandler);
 
         // Start the DownloadService.
         startService(intent);
@@ -189,11 +193,6 @@ public class DownloadActivity extends Activity {
             activity.displayImage(BitmapFactory.decodeFile(pathname));
         }
     };
-
-    /**
-     * Instance of DownloadHandler.
-     */
-    Handler downloadHandler = new DownloadHandler(this);
 
     /**
      * Display the Dialog to the User.
