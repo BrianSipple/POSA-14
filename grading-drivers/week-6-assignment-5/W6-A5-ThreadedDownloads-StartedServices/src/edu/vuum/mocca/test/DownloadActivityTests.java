@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.EditText;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.robotium.solo.Solo;
 
 import edu.vuum.mocca.DownloadActivity;
+import edu.vuum.mocca.R;
 
 /**
  * @class DownloadActivityTests
