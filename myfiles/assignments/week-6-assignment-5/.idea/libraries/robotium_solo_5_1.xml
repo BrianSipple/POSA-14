@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="robotium-solo-5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/W6-A5-ThreadedDownloads-StartedServices/libs/robotium-solo-5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
