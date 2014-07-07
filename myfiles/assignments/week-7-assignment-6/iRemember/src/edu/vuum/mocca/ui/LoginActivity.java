@@ -1,8 +1,8 @@
 package edu.vuum.mocca.ui;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.util.Scanner;
 
 import android.content.Context;
@@ -26,7 +26,12 @@ public class LoginActivity extends StoryActivityBase{
 	EditText mPassword;
 	
 	// Make sure we use maximum security to store login credentials
-	static final int MAX_SECURITY = Integer.MAX_VALUE;
+	//static final int MAX_SECURITY = Integer.MAX_VALUE;
+	
+	public enum Security {
+		MAX,
+		NONE
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +46,17 @@ public class LoginActivity extends StoryActivityBase{
 		
 	}
 
+
 	/**
 	 * Get the file used for storing login credentials
 	 */
 	public static File getLoginFile (Context context) {
 		return StorageUtilities.getOutputMediaFile(context, 	// Line 48
 				StorageUtilities.MEDIA_TYPE_TEXT, 
-				MAX_SECURITY, 
+				Security.MAX, 
 				"login.txt");
 	}
+	
 	
 	/**
 	 * Returns the last LoginId input into this activity, or 0 if none is set.
@@ -109,13 +116,15 @@ public class LoginActivity extends StoryActivityBase{
 	public void loginClicked(View v){
 		// Save the input login information in a file so that the rest of the app can access it.
 		File loginFile = getLoginFile(this);
+		FileOutputStream out = null;
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(loginFile));	// Line 113
-			writer.write(mLoginId.getText().toString());
-			writer.newLine();
-			writer.write(mPassword.getText().toString());
-			writer.newLine();
-			writer.close();
+			//BufferedWriter writer = new BufferedWriter(new FileWriter(loginFile));	// Line 113
+			out = this.openFileOutput(loginFile.toString(), Context.MODE_PRIVATE);
+			out.write(mLoginId.getText().toString().getBytes());
+			out.write("\n".getBytes());
+			out.write(mPassword.getText().toString().getBytes());
+			out.write("\n".getBytes());
+			out.close();
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "Problem in loginClicked");
 		}

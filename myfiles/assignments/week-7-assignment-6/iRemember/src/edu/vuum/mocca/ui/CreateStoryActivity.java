@@ -72,6 +72,7 @@ import edu.vuum.mocca.storage.MoocResolver;
 import edu.vuum.mocca.storage.StorageUtilities;
 import edu.vuum.mocca.storage.StoryCreator;
 import edu.vuum.mocca.storage.StoryData;
+import edu.vuum.mocca.ui.LoginActivity.Security;
 
 /**
  * The activity that allows a user to create and save a story.
@@ -277,7 +278,7 @@ public class CreateStoryActivity extends StoryActivityBase {
 		// Tell the sound activity where to store the recorded audio.
 		String fileName = StorageUtilities.getOutputMediaFile(this, // Line 278
 				StorageUtilities.MEDIA_TYPE_AUDIO, 
-				StorageUtilities.SECURITY_PUBLIC,
+				Security.MAX,
 				null).getAbsolutePath();
         
 		if (fileName == null)
@@ -303,7 +304,7 @@ public class CreateStoryActivity extends StoryActivityBase {
 		// Tell the capturing activity where to store the image
 		Uri uriPath = StorageUtilities.getOutputMediaFileUri(this, // Line 304
 				StorageUtilities.MEDIA_TYPE_IMAGE, 
-				StorageUtilities.SECURITY_PUBLIC,
+				Security.NONE,
 				null);
 		
 		if (uriPath == null)

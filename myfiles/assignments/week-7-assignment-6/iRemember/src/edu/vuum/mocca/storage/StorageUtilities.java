@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import edu.vuum.mocca.ui.LoginActivity.Security;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
@@ -21,8 +22,8 @@ public class StorageUtilities {
 	public static final String LOG_TAG = StorageUtilities.class.getCanonicalName();
 	
 	// Constant that denote whether a file should be stored publicly or privately
-	public static final int SECURITY_PUBLIC = 0; // Line 24
-	public static final int SECURITY_PRIVATE = 1;
+	//public static final int SECURITY_PUBLIC = 0; // Line 24
+	//public static final int SECURITY_PRIVATE = 1;
 	
 	// Constant that denotes what media type a file should be stored as.
 	public static final int MEDIA_TYPE_IMAGE = 1;
@@ -49,7 +50,7 @@ public class StorageUtilities {
 	 * 						the current time and media type.
 	 * @return			A File reference to a newly created temporary file
 	 */
-	public static File getOutputMediaFile(Context context, int type, int security, String name) {
+	public static File getOutputMediaFile(Context context, int type, Security security, String name) {
 		Log.d(LOG_TAG, "getOutputMediaFile() type:" + type);
 		
 		// Get the current time stamp
@@ -68,8 +69,10 @@ public class StorageUtilities {
 			return null;
 		}
 		
+		/* 
+		
 		// If security is private, store it in the app's private directory.
-		if (security == SECURITY_PRIVATE) {
+		if (security == security.MAX) {
 			storageDir = context.getFilesDir();
 		}
 		// Otherwise, store the file in a public directory depending on its media type.
@@ -86,6 +89,29 @@ public class StorageUtilities {
 					break;
 			}
 		}
+		
+		*/
+		
+		/*
+		 * The above was commented out in lieu of making our secure storage option the default
+		 */
+		if (security != Security.MAX) {
+			switch(type) {
+				case MEDIA_TYPE_IMAGE:
+					storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+					break;
+				case MEDIA_TYPE_AUDIO:
+					storageDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+					break;
+				case MEDIA_TYPE_TEXT:
+					storageDir = context.getExternalFilesDir(null);
+					break;
+			}
+		} else {
+			storageDir = context.getFilesDir();
+		}
+		
+		
 		
 		// If a name was specified, use that filename.
 		if (name != null && storageDir != null) {
@@ -122,7 +148,7 @@ public class StorageUtilities {
 	 * @param name		The name of the file to be created (optional)
 	 * @return			A Uri to a newly created temporary file
 	 */
-	public static Uri getOutputMediaFileUri(Context context, int type, int security, String name){
+	public static Uri getOutputMediaFileUri(Context context, int type, Security security, String name){
 		File outFile = getOutputMediaFile(context, type, security, name);
 		if (outFile != null)
 			return Uri.fromFile(outFile);	// Line 128
