@@ -8,6 +8,13 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
+    
+    <!-- Define a custom permission for our SoundActivity -->
+    <permission 
+        android:name="edu.vuum.mocca.privateSoundPermission"
+        android:label="private_Sound_Permission"
+        android:protectionLevel="dangerous">
+    </permission>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Line 12 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -53,7 +60,8 @@
         <activity
             android:name="edu.vuum.mocca.ui.SoundRecordActivity"
             android:label="@string/title_activity_sound_record"
-            android:exported="false">
+            android:exported="false"
+            android:permission="edu.vuum.mocca.privateSoundPermission" >
             <intent-filter> 										<!-- Line 56 -->
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
