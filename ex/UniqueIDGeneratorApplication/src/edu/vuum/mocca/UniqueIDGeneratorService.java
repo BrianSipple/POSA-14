@@ -109,21 +109,25 @@ public class UniqueIDGeneratorService extends Service {
         private Message generateUniqueID() {
             String uniqueID;
 
-            // This loop keeps generating a random UUID if it's not
-            // unique (i.e., is not currently found in the persistent
-            // collection of SharedPreferences).  The likelihood of a
-            // non-unique UUID is low, but we're being extra paranoid
-            // for the sake of this example ;-)
-            do {
-                uniqueID = UUID.randomUUID().toString();
-            } while (uniqueIDs.getInt(uniqueID, 0) == 1);
+            // Protect critical section to ensure the IDs are unique.
+            synchronized (this) {
+                // This loop keeps generating a random UUID if it's
+                // not unique (i.e., is not currently found in the
+                // persistent collection of SharedPreferences).  The
+                // likelihood of a non-unique UUID is low, but we're
+                // being extra paranoid for the sake of this example
+                // ;-)
+                do {
+                    uniqueID = UUID.randomUUID().toString();
+                } while (uniqueIDs.getInt(uniqueID, 0) == 1);
 
-            // We found a unique ID, so add it as the "key" to the
-            // persistent collection of SharedPreferences, with a
-            // value of 1 to indicate this ID is already "used".
-            SharedPreferences.Editor editor = uniqueIDs.edit();
-            editor.putInt(uniqueID, 1);
-            editor.commit();
+                // We found a unique ID, so add it as the "key" to the
+                // persistent collection of SharedPreferences, with a
+                // value of 1 to indicate this ID is already "used".
+                SharedPreferences.Editor editor = uniqueIDs.edit();
+                editor.putInt(uniqueID, 1);
+                editor.commit();
+            }
 
             // Create a Message that's used to send the unique ID back
             // to the UniqueIDGeneratorActivity.
@@ -143,6 +147,8 @@ public class UniqueIDGeneratorService extends Service {
             // underneath us.
             final Messenger replyMessenger = request.replyTo;
 
+            // Log.d(TAG, "replyMessenger = " + replyMessenger.hashCode());
+
             // Put a runnable that generates a unique ID into the
             // thread pool for subsequent concurrent processing.
             mExecutor.execute(new Runnable() {
@@ -153,6 +159,8 @@ public class UniqueIDGeneratorService extends Service {
                         try {
                             // Send the reply back to the
                             // UniqueIDGeneratorActivity.
+                            // Log.d(TAG, "replyMessenger = " + replyMessenger.hashCode());
+                            // try { Thread.sleep (10000); } catch (InterruptedException e) {}
                             replyMessenger.send(reply);
                         } catch (RemoteException e) {
                             e.printStackTrace();

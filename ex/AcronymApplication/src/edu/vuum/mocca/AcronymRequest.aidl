@@ -1,20 +1,21 @@
 package edu.vuum.mocca;
 
-import edu.vuum.mocca.AcronymCallback;
+import edu.vuum.mocca.AcronymResults;
 
 /**
  * Interface defining the method that the AcronymServiceAsync will
- * implement to provide access to the Acronym Web service.
+ * implement to provide asynchronous access to the Acronym Web
+ * service.
  */
 interface AcronymRequest {
    /**
     * A one-way (non-blocking) call to the AcronymServiceAsync that
     * retrieves information about an acronym from the Acronym Web
     * service.  The AcronymServiceAsync subsequently uses the
-    * AcronymCallback parameter to return a List of AcronymData
+    * AcronymResults parameter to return a List of AcronymData
     * containing the results from the Web service back to the
     * AcronymActivity.
     */
-    oneway void callAcronymRequest (in AcronymCallback callback,
-                                    in String acronym); 
+    oneway void expandAcronym (in AcronymResults results,
+                               in String acronym); 
 }
