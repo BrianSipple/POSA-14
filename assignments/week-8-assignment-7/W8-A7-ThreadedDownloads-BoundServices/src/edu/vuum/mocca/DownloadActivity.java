@@ -48,7 +48,7 @@ public class DownloadActivity extends DownloadBase {
 	 * Requestor in the Broker Pattern.  If it's null then there's no
 	 * connection to the Service.
 	 */
-	DownloadCall mDownloadCall;  // object reference to the proxy for synchronous twoway calls to DownloadServiceSync
+	DownloadCall mDownloadCall;  // object reference to the proxy interface for synchronous twoway calls to DownloadServiceSync
 
 	/**
 	 * The AIDL Interface that we will use to make oneway calls to the
@@ -56,7 +56,7 @@ public class DownloadActivity extends DownloadBase {
 	 * in the Broker Pattern.  If it's null then there's no connection
 	 * to the Service.
 	 */
-	DownloadRequest mDownloadRequest;	// object reference to the proxy for asnyc oneway calls to DownloadServiceAsync
+	DownloadRequest mDownloadRequest;	// object reference to the proxy interface for async oneway calls to DownloadServiceAsync
 
 	/** 
 	 * This ServiceConnection is used to receive results after binding
