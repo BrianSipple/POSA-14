@@ -6,6 +6,8 @@ package edu.vuum.mocca;
  * @brief An AIDL Interface used for receiving results from a call to
  *        DownloadRequest.downloadImage()
  *
+ *  Service ------- > Activity 
+ *
  *		This file generates a java interface in /gen
  */
 interface DownloadCallback {

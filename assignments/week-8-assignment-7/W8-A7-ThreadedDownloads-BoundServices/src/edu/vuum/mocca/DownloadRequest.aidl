@@ -10,6 +10,10 @@ import edu.vuum.mocca.DownloadCallback;
  *        so that the downloading process can return a result across
  *        process boundaries asynchronously.
  *
+ *
+ *   Activity ---------> Service
+ *
+ *
  *		This file generates a java interface in /gen
  */
 interface DownloadRequest {
