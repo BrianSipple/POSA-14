@@ -34,7 +34,7 @@ public class DownloadUtils {
     */
     // TODO - You can change this to the appropriate setting for your
     // environment.
-    static final boolean DOWNLOAD_OFFLINE = true;
+    static final boolean DOWNLOAD_OFFLINE = false;
     
     /**
      * The resource that we write to the file system in offline

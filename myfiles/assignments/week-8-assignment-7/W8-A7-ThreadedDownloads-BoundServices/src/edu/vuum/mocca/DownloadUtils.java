@@ -34,7 +34,7 @@ public class DownloadUtils {
     */
     // TODO - You can change this to the appropriate setting for your
     // environment.
-    static final boolean DOWNLOAD_OFFLINE = true;
+    static final boolean DOWNLOAD_OFFLINE = false;
     
     /**
      * The resource that we write to the file system in offline
@@ -154,11 +154,11 @@ public class DownloadUtils {
         int totalRead = 0;
         int read = 0;
 
-        while ((read = in.read(buffer)) != -1) {
+        while ((read = in.read(buffer)) != -1) {  // assign "read" to the value of in.read(buffer), and then compare to -1 (which "read" will only be equal to if in.read(buffer) returns a -1)
             out.write(buffer, 0, read);
             totalRead += read;			
         }
 
-        return totalRead;
+        return totalRead;  
     }
 }

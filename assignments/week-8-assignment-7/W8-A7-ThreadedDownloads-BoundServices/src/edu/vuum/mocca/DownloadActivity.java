@@ -160,6 +160,7 @@ public class DownloadActivity extends DownloadBase {
 	 * @throws RemoteException 
 	 */
 	public void runService(View view) throws RemoteException {
+		
 		Uri uri = Uri.parse(getUrlString());
 
 		hideKeyboard();
